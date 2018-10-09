@@ -1,4 +1,4 @@
-import org.openkinect.processing.*; //<>// //<>//
+import org.openkinect.processing.*; //<>// //<>// //<>//
   
 import processing.sound.*;
 Amplitude amp;
@@ -17,7 +17,10 @@ float hue=0;
 
 //PFont f;
 
-
+float jitterx;
+float jittery;
+float jitterz;
+float jitterMax = 100;
   
 void setup() {
   //f = createFont("Helvetica", 200);
@@ -27,8 +30,11 @@ void setup() {
   kinect2.initVideo(); 
  // lines = loadStrings("text.txt");
 
-
-
+  // Create an Input stream which is routed into the Amplitude analyzer
+  amp = new Amplitude(this);
+  in = new AudioIn(this, 0);
+  in.start();
+  amp.input(in);
 
 }
 
@@ -70,8 +76,13 @@ void draw() {
         stroke(hue, 127, 127);
         fill(hue, 127, 127);
 
+        jitterMax = 0-jitterMax;
+        jitterx = amp.analyze()*jitterMax;
+        jittery = amp.analyze()*jitterMax;
+        jitterz = amp.analyze()*jitterMax;
+
         //text(" 0 ", 320-point.x, point.y, point.z+1300);
-        vertex(320-point.x, point.y, point.z+1350);
+        vertex(320-point.x+jitterx, point.y+jittery, (point.z+1350)+jitterz);
       }
     }
   }
